@@ -28,4 +28,6 @@ resource "aztfteam_baby" "one" {
 ### Read-Only
 
 - `id` (String) Internal identifier
+- `agility` (Number) Baby's agility
+- `endurance` (Number) Baby's endurance
 - `strength` (Number) Baby's strength
