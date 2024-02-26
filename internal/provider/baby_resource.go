@@ -22,8 +22,10 @@ import (
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
-var _ resource.Resource = &BabyResource{}
-var _ resource.ResourceWithImportState = &BabyResource{}
+var (
+	_ resource.Resource                = &BabyResource{}
+	_ resource.ResourceWithImportState = &BabyResource{}
+)
 
 func NewBabyResource() resource.Resource {
 	return &BabyResource{}
@@ -36,10 +38,11 @@ type BabyResource struct {
 
 // BabyResourceModel describes the resource data model.
 type BabyResourceModel struct {
-	Id       types.String `tfsdk:"id"`
-	Name     types.String `tfsdk:"name"`
-	Agility  types.Number `tfsdk:"agility"`
-	Strength types.Number `tfsdk:"strength"`
+	Id        types.String `tfsdk:"id"`
+	Name      types.String `tfsdk:"name"`
+	Agility   types.Number `tfsdk:"agility"`
+	Endurance types.Number `tfsdk:"endurance"`
+	Strength  types.Number `tfsdk:"strength"`
 }
 
 func (r *BabyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -69,6 +72,10 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 			"agility": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's agility",
+			},
+			"endurance": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's endurance",
 			},
 			"strength": schema.NumberAttribute{
 				Computed:            true,
@@ -120,7 +127,8 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// save into the Terraform state.
 	data.Id = types.StringValue(uuid.NewString())
 	// According to https://help.bethesda.net/#en/answer/44321: "Each individual attribute has the potential to reach a maximum total of 15 points assigned."
-	data.Agility = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(3))))
+	data.Agility = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
+	data.Endurance = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Strength = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 
 	// Write logs using the tflog package
