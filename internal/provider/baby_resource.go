@@ -38,6 +38,7 @@ type BabyResource struct {
 type BabyResourceModel struct {
 	Id       types.String `tfsdk:"id"`
 	Name     types.String `tfsdk:"name"`
+	Agility  types.Number `tfsdk:"agility"`
 	Strength types.Number `tfsdk:"strength"`
 }
 
@@ -64,6 +65,10 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"agility": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's agility",
 			},
 			"strength": schema.NumberAttribute{
 				Computed:            true,
@@ -115,6 +120,7 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// save into the Terraform state.
 	data.Id = types.StringValue(uuid.NewString())
 	// According to https://help.bethesda.net/#en/answer/44321: "Each individual attribute has the potential to reach a maximum total of 15 points assigned."
+	data.Agility = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(3))))
 	data.Strength = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 
 	// Write logs using the tflog package

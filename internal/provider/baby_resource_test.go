@@ -23,6 +23,7 @@ func TestAccExampleResource(t *testing.T) {
 				Config: testAccBabyResourceConfig("neo"),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(rsName, "name", "neo"),
+					resource.TestCheckResourceAttr(rsName, "agility", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "strength", validSpecial),
 					resource.TestCheckResourceAttrSet(rsName, "id"),
 				),
@@ -36,7 +37,7 @@ func TestAccExampleResource(t *testing.T) {
 				// example code does not have an actual upstream service.
 				// Once the Read method is able to refresh information from
 				// the upstream service, this can be removed.
-				ImportStateVerifyIgnore: []string{"name", "strength"},
+				ImportStateVerifyIgnore: []string{"name", "agility", "strength"},
 			},
 			// Delete testing automatically occurs in TestCase
 		},
