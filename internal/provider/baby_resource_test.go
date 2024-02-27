@@ -28,6 +28,8 @@ func TestAccExampleResource(t *testing.T) {
 					resource.TestCheckResourceAttrWith(rsName, "luck", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "strength", validSpecial),
 					resource.TestCheckResourceAttrSet(rsName, "id"),
+					resource.TestCheckResourceAttrSet(rsName, "birthday"),
+					resource.TestCheckResourceAttrSet(rsName, "age"),
 				),
 			},
 			// ImportState testing
@@ -45,6 +47,8 @@ func TestAccExampleResource(t *testing.T) {
 					"endurance",
 					"luck",
 					"strength",
+					"birthday",
+					"age",
 				},
 			},
 			// Delete testing automatically occurs in TestCase
@@ -52,6 +56,41 @@ func TestAccExampleResource(t *testing.T) {
 	})
 }
 
+func TestAccExampleResource_withBirthday(t *testing.T) {
+	rsName := "aztfteam_baby.test"
+	birthday := "2024-02-23T20:09:00+08:00"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			// Create and Read testing
+			{
+				Config: testAccBabyResourceConfig_withBirthday("neo", birthday),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr(rsName, "name", "neo"),
+					resource.TestCheckResourceAttrWith(rsName, "agility", validSpecial),
+					resource.TestCheckResourceAttrWith(rsName, "endurance", validSpecial),
+					resource.TestCheckResourceAttrWith(rsName, "luck", validSpecial),
+					resource.TestCheckResourceAttrWith(rsName, "strength", validSpecial),
+					resource.TestCheckResourceAttr(rsName, "birthday", birthday),
+					resource.TestCheckResourceAttrSet(rsName, "id"),
+					resource.TestCheckResourceAttrSet(rsName, "age"),
+				),
+			},
+		},
+	})
+}
+
+func testAccBabyResourceConfig_withBirthday(name string, birthday string) string {
+	return fmt.Sprintf(`
+provider "aztfteam" {}
+resource "aztfteam_baby" "test" {
+  name 	   = "%s"
+  birthday = "%s"
+}
+`, name, birthday)
+}
 func testAccBabyResourceConfig(name string) string {
 	return fmt.Sprintf(`
 provider "aztfteam" {}

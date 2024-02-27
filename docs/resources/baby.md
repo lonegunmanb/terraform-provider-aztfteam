@@ -25,6 +25,10 @@ resource "aztfteam_baby" "one" {
 
 - `name` (String) Baby's name
 
+### Optional
+
+- `birthday` (String) Baby's birthday in RFC3339 format. Using the current time if not specified.
+
 ### Read-Only
 
 - `id` (String) Internal identifier
@@ -32,3 +36,4 @@ resource "aztfteam_baby" "one" {
 - `endurance` (Number) Baby's endurance
 - `luck` (Number) Baby's luck
 - `strength` (Number) Baby's strength
+- `age` (Int64) Baby's age

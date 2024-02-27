@@ -17,8 +17,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	myvalidator "github.com/lonegunmanb/terraform-provider-aztfteam/internal/validator"
+	"github.com/magodo/age"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -40,6 +43,8 @@ type BabyResource struct {
 type BabyResourceModel struct {
 	Id        types.String `tfsdk:"id"`
 	Name      types.String `tfsdk:"name"`
+	Birthday  types.String `tfsdk:"birthday"`
+	Age       types.Int64  `tfsdk:"age"`
 	Strength  types.Number `tfsdk:"strength"`
 	Endurance types.Number `tfsdk:"endurance"`
 	Agility   types.Number `tfsdk:"agility"`
@@ -69,6 +74,24 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"birthday": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "The birthday in RFC3339 format",
+				Validators: []validator.String{
+					myvalidator.StringIsParsable("birthday", func(s string) error {
+						_, err := time.Parse(time.RFC3339, s)
+						return err
+					}),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"age": schema.Int64Attribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's age",
 			},
 			"strength": schema.NumberAttribute{
 				Computed:            true,
@@ -131,6 +154,17 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// For the purposes of this example code, hardcoding a response value to
 	// save into the Terraform state.
 	data.Id = types.StringValue(uuid.NewString())
+
+	if data.Birthday.IsUnknown() {
+		data.Birthday = types.StringValue(time.Now().Format(time.RFC3339))
+	}
+	birthDay, err := time.Parse(time.RFC3339, data.Birthday.ValueString())
+	if err != nil {
+		// This shouldn't happen as the schema has validated it, while we still test against this for completeness.
+		panic(fmt.Errorf("failed to parse birthday %q: %v", data.Birthday, err))
+	}
+	data.Age = types.Int64Value(int64(age.Age(birthDay, time.Now())))
+
 	// According to https://help.bethesda.net/#en/answer/44321: "Each individual attribute has the potential to reach a maximum total of 15 points assigned."
 	data.Agility = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Endurance = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
@@ -141,7 +175,7 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// Documentation: https://terraform.io/plugin/log
 	tflog.Trace(ctx, "created a baby")
 
-	time.Sleep(100 * time.Second)
+	time.Sleep(1 * time.Second)
 	// Save data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -151,6 +185,16 @@ func (r *BabyResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+
+	// As long as the baby is created naturally, the birthday shall always be available.
+	if !data.Birthday.IsNull() {
+		birthDay, err := time.Parse(time.RFC3339, data.Birthday.ValueString())
+		if err != nil {
+			// This shouldn't happen as the schema has validated it, while we still test against this for completeness.
+			panic(fmt.Errorf("failed to parse birthday %q: %v", data.Birthday, err))
+		}
+		data.Age = types.Int64Value(int64(age.Age(birthDay, time.Now())))
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
