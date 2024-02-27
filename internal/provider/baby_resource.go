@@ -42,6 +42,7 @@ type BabyResourceModel struct {
 	Name      types.String `tfsdk:"name"`
 	Agility   types.Number `tfsdk:"agility"`
 	Endurance types.Number `tfsdk:"endurance"`
+	Luck      types.Number `tfsdk:"luck"`
 	Strength  types.Number `tfsdk:"strength"`
 }
 
@@ -76,6 +77,10 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 			"endurance": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's endurance",
+			},
+			"luck": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's luck",
 			},
 			"strength": schema.NumberAttribute{
 				Computed:            true,
@@ -129,6 +134,7 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// According to https://help.bethesda.net/#en/answer/44321: "Each individual attribute has the potential to reach a maximum total of 15 points assigned."
 	data.Agility = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Endurance = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
+	data.Luck = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Strength = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 
 	// Write logs using the tflog package
