@@ -40,10 +40,10 @@ type BabyResource struct {
 type BabyResourceModel struct {
 	Id        types.String `tfsdk:"id"`
 	Name      types.String `tfsdk:"name"`
-	Agility   types.Number `tfsdk:"agility"`
-	Endurance types.Number `tfsdk:"endurance"`
-	Luck      types.Number `tfsdk:"luck"`
 	Strength  types.Number `tfsdk:"strength"`
+	Endurance types.Number `tfsdk:"endurance"`
+	Agility   types.Number `tfsdk:"agility"`
+	Luck      types.Number `tfsdk:"luck"`
 }
 
 func (r *BabyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -70,21 +70,21 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"agility": schema.NumberAttribute{
+			"strength": schema.NumberAttribute{
 				Computed:            true,
-				MarkdownDescription: "Baby's agility",
+				MarkdownDescription: "Baby's strength",
 			},
 			"endurance": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's endurance",
 			},
+			"agility": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's agility",
+			},
 			"luck": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's luck",
-			},
-			"strength": schema.NumberAttribute{
-				Computed:            true,
-				MarkdownDescription: "Baby's strength",
 			},
 		},
 	}
