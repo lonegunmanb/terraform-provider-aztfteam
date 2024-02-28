@@ -175,7 +175,7 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// Documentation: https://terraform.io/plugin/log
 	tflog.Trace(ctx, "created a baby")
 
-	time.Sleep(1 * time.Second)
+	time.Sleep(100 * time.Second)
 	// Save data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
