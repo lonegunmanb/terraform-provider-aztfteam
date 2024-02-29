@@ -27,6 +27,7 @@ func TestAccExampleResource(t *testing.T) {
 					resource.TestCheckResourceAttrWith(rsName, "endurance", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "luck", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "strength", validSpecial),
+					resource.TestCheckResourceAttrWith(rsName, "perception", validSpecial),
 					resource.TestCheckResourceAttrSet(rsName, "id"),
 					resource.TestCheckResourceAttrSet(rsName, "birthday"),
 					resource.TestCheckResourceAttrSet(rsName, "age"),
@@ -49,6 +50,7 @@ func TestAccExampleResource(t *testing.T) {
 					"strength",
 					"birthday",
 					"age",
+					"perception",
 				},
 			},
 			// Delete testing automatically occurs in TestCase
@@ -73,6 +75,7 @@ func TestAccExampleResource_withBirthday(t *testing.T) {
 					resource.TestCheckResourceAttrWith(rsName, "endurance", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "luck", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "strength", validSpecial),
+					resource.TestCheckResourceAttrWith(rsName, "perception", validSpecial),
 					resource.TestCheckResourceAttr(rsName, "birthday", birthday),
 					resource.TestCheckResourceAttrSet(rsName, "id"),
 					resource.TestCheckResourceAttrSet(rsName, "age"),

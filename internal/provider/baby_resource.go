@@ -41,14 +41,15 @@ type BabyResource struct {
 
 // BabyResourceModel describes the resource data model.
 type BabyResourceModel struct {
-	Id        types.String `tfsdk:"id"`
-	Name      types.String `tfsdk:"name"`
-	Birthday  types.String `tfsdk:"birthday"`
-	Age       types.Int64  `tfsdk:"age"`
-	Strength  types.Number `tfsdk:"strength"`
-	Endurance types.Number `tfsdk:"endurance"`
-	Agility   types.Number `tfsdk:"agility"`
-	Luck      types.Number `tfsdk:"luck"`
+	Id         types.String `tfsdk:"id"`
+	Name       types.String `tfsdk:"name"`
+	Birthday   types.String `tfsdk:"birthday"`
+	Age        types.Int64  `tfsdk:"age"`
+	Strength   types.Number `tfsdk:"strength"`
+	Endurance  types.Number `tfsdk:"endurance"`
+	Agility    types.Number `tfsdk:"agility"`
+	Luck       types.Number `tfsdk:"luck"`
+	Perception types.Number `tfsdk:"perception"`
 }
 
 func (r *BabyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -108,6 +109,10 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 			"luck": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's luck",
+			},
+			"perception": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's perception",
 			},
 		},
 	}
@@ -170,6 +175,7 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	data.Endurance = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Luck = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Strength = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
+	data.Perception = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 
 	// Write logs using the tflog package
 	// Documentation: https://terraform.io/plugin/log

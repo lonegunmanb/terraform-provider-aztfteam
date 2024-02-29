@@ -36,4 +36,5 @@ resource "aztfteam_baby" "one" {
 - `endurance` (Number) Baby's endurance
 - `luck` (Number) Baby's luck
 - `strength` (Number) Baby's strength
+- `perception` (Number) Baby's perception
 - `age` (Int64) Baby's age
