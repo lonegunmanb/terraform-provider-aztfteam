@@ -37,3 +37,4 @@ resource "aztfteam_baby" "one" {
 - `luck` (Number) Baby's luck
 - `strength` (Number) Baby's strength
 - `age` (Int64) Baby's age
+- `tags` (Map) Baby's tags

@@ -30,6 +30,7 @@ func TestAccExampleResource(t *testing.T) {
 					resource.TestCheckResourceAttrSet(rsName, "id"),
 					resource.TestCheckResourceAttrSet(rsName, "birthday"),
 					resource.TestCheckResourceAttrSet(rsName, "age"),
+					resource.TestCheckResourceAttr(rsName, "tags.blessed_by", "terraform engineering China team"),
 				),
 			},
 			// ImportState testing
@@ -49,6 +50,7 @@ func TestAccExampleResource(t *testing.T) {
 					"strength",
 					"birthday",
 					"age",
+					"tags",
 				},
 			},
 			// Delete testing automatically occurs in TestCase
@@ -76,6 +78,7 @@ func TestAccExampleResource_withBirthday(t *testing.T) {
 					resource.TestCheckResourceAttr(rsName, "birthday", birthday),
 					resource.TestCheckResourceAttrSet(rsName, "id"),
 					resource.TestCheckResourceAttrSet(rsName, "age"),
+					resource.TestCheckResourceAttr(rsName, "tags.blessed_by", "terraform engineering China team"),
 				),
 			},
 		},

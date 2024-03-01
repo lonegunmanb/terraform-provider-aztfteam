@@ -6,6 +6,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"math/big"
 	"math/rand"
 	"net/http"
@@ -49,6 +50,7 @@ type BabyResourceModel struct {
 	Endurance types.Number `tfsdk:"endurance"`
 	Agility   types.Number `tfsdk:"agility"`
 	Luck      types.Number `tfsdk:"luck"`
+	Tags      types.Map    `tfsdk:"tags"`
 }
 
 func (r *BabyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -108,6 +110,11 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 			"luck": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's luck",
+			},
+			"tags": schema.MapAttribute{
+				ElementType:         types.StringType,
+				Computed:            true,
+				MarkdownDescription: "Baby's tags",
 			},
 		},
 	}
@@ -170,6 +177,9 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	data.Endurance = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Luck = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Strength = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
+	data.Tags, _ = types.MapValue(types.StringType, map[string]attr.Value{
+		"blessed_by": types.StringValue("terraform engineering China team"),
+	})
 
 	// Write logs using the tflog package
 	// Documentation: https://terraform.io/plugin/log
