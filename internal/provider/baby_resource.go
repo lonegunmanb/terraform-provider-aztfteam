@@ -50,6 +50,7 @@ type BabyResourceModel struct {
 	Endurance types.Number `tfsdk:"endurance"`
 	Agility   types.Number `tfsdk:"agility"`
 	Luck      types.Number `tfsdk:"luck"`
+	Charisma  types.Number `tfsdk:"charisma"`
 	Tags      types.Map    `tfsdk:"tags"`
 }
 
@@ -110,6 +111,10 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 			"luck": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's luck",
+			},
+			"charisma": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's charisma",
 			},
 			"tags": schema.MapAttribute{
 				ElementType:         types.StringType,
@@ -176,6 +181,7 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	data.Agility = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Endurance = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Luck = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
+	data.Charisma = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Strength = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Tags, _ = types.MapValue(types.StringType, map[string]attr.Value{
 		"blessed_by": types.StringValue("terraform engineering China team"),

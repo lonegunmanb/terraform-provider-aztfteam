@@ -33,6 +33,7 @@ resource "aztfteam_baby" "one" {
 
 - `id` (String) Internal identifier
 - `agility` (Number) Baby's agility
+- `charisma` (Number) Baby's charisma
 - `endurance` (Number) Baby's endurance
 - `luck` (Number) Baby's luck
 - `strength` (Number) Baby's strength
