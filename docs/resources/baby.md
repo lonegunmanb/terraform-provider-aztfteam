@@ -35,6 +35,7 @@ resource "aztfteam_baby" "one" {
 - `agility` (Number) Baby's agility
 - `charisma` (Number) Baby's charisma
 - `endurance` (Number) Baby's endurance
+- `intelligence` (Number) Baby's intelligence
 - `luck` (Number) Baby's luck
 - `strength` (Number) Baby's strength
 - `age` (Int64) Baby's age
