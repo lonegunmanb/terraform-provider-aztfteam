@@ -24,13 +24,17 @@ func TestAccExampleResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr(rsName, "name", "neo"),
 					resource.TestCheckResourceAttrWith(rsName, "agility", validSpecial),
+					resource.TestCheckResourceAttrWith(rsName, "charisma", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "endurance", validSpecial),
+					resource.TestCheckResourceAttrWith(rsName, "intelligence", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "luck", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "strength", validSpecial),
 					resource.TestCheckResourceAttrWith(rsName, "perception", validSpecial),
 					resource.TestCheckResourceAttrSet(rsName, "id"),
 					resource.TestCheckResourceAttrSet(rsName, "birthday"),
 					resource.TestCheckResourceAttrSet(rsName, "age"),
+					resource.TestCheckResourceAttrSet(rsName, "id"),
+					resource.TestCheckResourceAttr(rsName, "tags.blessed_by", "terraform engineering China team"),
 				),
 			},
 			// ImportState testing
@@ -43,14 +47,19 @@ func TestAccExampleResource(t *testing.T) {
 				// Once the Read method is able to refresh information from
 				// the upstream service, this can be removed.
 				ImportStateVerifyIgnore: []string{
-					"name",
+					"age",
 					"agility",
+					"birthday",
+					"charisma",
 					"endurance",
+					"intelligence",
 					"luck",
+					"name",
 					"strength",
 					"birthday",
 					"age",
 					"perception",
+					"tags",
 				},
 			},
 			// Delete testing automatically occurs in TestCase
@@ -79,6 +88,7 @@ func TestAccExampleResource_withBirthday(t *testing.T) {
 					resource.TestCheckResourceAttr(rsName, "birthday", birthday),
 					resource.TestCheckResourceAttrSet(rsName, "id"),
 					resource.TestCheckResourceAttrSet(rsName, "age"),
+					resource.TestCheckResourceAttr(rsName, "tags.blessed_by", "terraform engineering China team"),
 				),
 			},
 		},

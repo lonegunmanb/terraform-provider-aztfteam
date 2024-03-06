@@ -11,6 +11,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -41,15 +43,18 @@ type BabyResource struct {
 
 // BabyResourceModel describes the resource data model.
 type BabyResourceModel struct {
-	Id         types.String `tfsdk:"id"`
-	Name       types.String `tfsdk:"name"`
-	Birthday   types.String `tfsdk:"birthday"`
-	Age        types.Int64  `tfsdk:"age"`
-	Strength   types.Number `tfsdk:"strength"`
-	Endurance  types.Number `tfsdk:"endurance"`
-	Agility    types.Number `tfsdk:"agility"`
-	Luck       types.Number `tfsdk:"luck"`
-	Perception types.Number `tfsdk:"perception"`
+	Age          types.Int64  `tfsdk:"age"`
+	Agility      types.Number `tfsdk:"agility"`
+	Birthday     types.String `tfsdk:"birthday"`
+	Charisma     types.Number `tfsdk:"charisma"`
+	Endurance    types.Number `tfsdk:"endurance"`
+	Id           types.String `tfsdk:"id"`
+	Intelligence types.Int64  `tfsdk:"intelligence"`
+	Luck         types.Number `tfsdk:"luck"`
+	Name         types.String `tfsdk:"name"`
+	Strength     types.Number `tfsdk:"strength"`
+	Perception   types.Number `tfsdk:"perception"`
+	Tags         types.Map    `tfsdk:"tags"`
 }
 
 func (r *BabyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -113,6 +118,19 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 			"perception": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's perception",
+      },
+			"charisma": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's charisma",
+			},
+			"intelligence": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's intelligence",
+			},
+			"tags": schema.MapAttribute{
+				ElementType:         types.StringType,
+				Computed:            true,
+				MarkdownDescription: "Baby's tags",
 			},
 		},
 	}
@@ -173,9 +191,14 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// According to https://help.bethesda.net/#en/answer/44321: "Each individual attribute has the potential to reach a maximum total of 15 points assigned."
 	data.Agility = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Endurance = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
+	data.Intelligence = types.Int64Value(int64(100 + rand.Int31n(40)))
 	data.Luck = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
+	data.Charisma = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Strength = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
 	data.Perception = types.NumberValue(big.NewFloat(float64(10 + rand.Int31n(6))))
+	data.Tags, _ = types.MapValue(types.StringType, map[string]attr.Value{
+		"blessed_by": types.StringValue("terraform engineering China team"),
+	})
 
 	// Write logs using the tflog package
 	// Documentation: https://terraform.io/plugin/log
