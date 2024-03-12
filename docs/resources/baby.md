@@ -38,5 +38,6 @@ resource "aztfteam_baby" "one" {
 - `intelligence` (Number) Baby's intelligence
 - `luck` (Number) Baby's luck
 - `strength` (Number) Baby's strength
+- `perception` (Number) Baby's perception
 - `age` (Int64) Baby's age
 - `tags` (Map) Baby's tags
