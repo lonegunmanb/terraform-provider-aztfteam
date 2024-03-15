@@ -43,18 +43,19 @@ type BabyResource struct {
 
 // BabyResourceModel describes the resource data model.
 type BabyResourceModel struct {
-	Age          types.Int64  `tfsdk:"age"`
-	Agility      types.Number `tfsdk:"agility"`
-	Birthday     types.String `tfsdk:"birthday"`
-	Charisma     types.Number `tfsdk:"charisma"`
-	Endurance    types.Number `tfsdk:"endurance"`
-	Id           types.String `tfsdk:"id"`
-	Intelligence types.Int64  `tfsdk:"intelligence"`
-	Luck         types.Number `tfsdk:"luck"`
-	Name         types.String `tfsdk:"name"`
-	Strength     types.Number `tfsdk:"strength"`
-	Perception   types.Number `tfsdk:"perception"`
-	Tags         types.Map    `tfsdk:"tags"`
+	Age              types.Int64  `tfsdk:"age"`
+	Agility          types.Number `tfsdk:"agility"`
+	Birthday         types.String `tfsdk:"birthday"`
+	Charisma         types.Number `tfsdk:"charisma"`
+	Endurance        types.Number `tfsdk:"endurance"`
+	Id               types.String `tfsdk:"id"`
+	Intelligence     types.Int64  `tfsdk:"intelligence"`
+	Luck             types.Number `tfsdk:"luck"`
+	Name             types.String `tfsdk:"name"`
+	Strength         types.Number `tfsdk:"strength"`
+	Perception       types.Number `tfsdk:"perception"`
+	Tags             types.Map    `tfsdk:"tags"`
+	BiologicalGender types.String `tfsdk:"biological_gender"`
 }
 
 func (r *BabyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -118,14 +119,18 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 			"perception": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's perception",
-      },
+			},
 			"charisma": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's charisma",
 			},
-			"intelligence": schema.NumberAttribute{
+			"intelligence": schema.Int64Attribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's intelligence",
+			},
+			"biological_gender": schema.StringAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's biological gender",
 			},
 			"tags": schema.MapAttribute{
 				ElementType:         types.StringType,
@@ -199,6 +204,9 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 	data.Tags, _ = types.MapValue(types.StringType, map[string]attr.Value{
 		"blessed_by": types.StringValue("terraform engineering China team"),
 	})
+
+	genders := []string{"boy", "girl"}
+	data.BiologicalGender = types.StringValue(genders[rand.Int()%len(genders)])
 
 	// Write logs using the tflog package
 	// Documentation: https://terraform.io/plugin/log
