@@ -43,19 +43,19 @@ type BabyResource struct {
 
 // BabyResourceModel describes the resource data model.
 type BabyResourceModel struct {
-	Age              types.Int64  `tfsdk:"age"`
-	Agility          types.Number `tfsdk:"agility"`
-	Birthday         types.String `tfsdk:"birthday"`
-	Charisma         types.Number `tfsdk:"charisma"`
-	Endurance        types.Number `tfsdk:"endurance"`
 	Id               types.String `tfsdk:"id"`
-	Intelligence     types.Int64  `tfsdk:"intelligence"`
-	Luck             types.Number `tfsdk:"luck"`
 	Name             types.String `tfsdk:"name"`
+	Age              types.Int64  `tfsdk:"age"`
+	Birthday         types.String `tfsdk:"birthday"`
+	BiologicalGender types.String `tfsdk:"biological_gender"`
 	Strength         types.Number `tfsdk:"strength"`
 	Perception       types.Number `tfsdk:"perception"`
+	Endurance        types.Number `tfsdk:"endurance"`
+	Charisma         types.Number `tfsdk:"charisma"`
+	Intelligence     types.Int64  `tfsdk:"intelligence"`
+	Agility          types.Number `tfsdk:"agility"`
+	Luck             types.Number `tfsdk:"luck"`
 	Tags             types.Map    `tfsdk:"tags"`
-	BiologicalGender types.String `tfsdk:"biological_gender"`
 }
 
 func (r *BabyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -100,25 +100,21 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 				Computed:            true,
 				MarkdownDescription: "Baby's age",
 			},
+			"biological_gender": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "Baby's biological gender",
+			},
 			"strength": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's strength",
 			},
-			"endurance": schema.NumberAttribute{
-				Computed:            true,
-				MarkdownDescription: "Baby's endurance",
-			},
-			"agility": schema.NumberAttribute{
-				Computed:            true,
-				MarkdownDescription: "Baby's agility",
-			},
-			"luck": schema.NumberAttribute{
-				Computed:            true,
-				MarkdownDescription: "Baby's luck",
-			},
 			"perception": schema.NumberAttribute{
 				Computed:            true,
 				MarkdownDescription: "Baby's perception",
+			},
+			"endurance": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's endurance",
 			},
 			"charisma": schema.NumberAttribute{
 				Computed:            true,
@@ -128,9 +124,13 @@ func (r *BabyResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 				Computed:            true,
 				MarkdownDescription: "Baby's intelligence",
 			},
-			"biological_gender": schema.StringAttribute{
+			"agility": schema.NumberAttribute{
 				Computed:            true,
-				MarkdownDescription: "Baby's biological gender",
+				MarkdownDescription: "Baby's agility",
+			},
+			"luck": schema.NumberAttribute{
+				Computed:            true,
+				MarkdownDescription: "Baby's luck",
 			},
 			"tags": schema.MapAttribute{
 				ElementType:         types.StringType,
@@ -205,9 +205,10 @@ func (r *BabyResource) Create(ctx context.Context, req resource.CreateRequest, r
 		"blessed_by": types.StringValue("terraform engineering China team"),
 	})
 
-	genders := []string{"boy", "girl"}
-	data.BiologicalGender = types.StringValue(genders[rand.Int()%len(genders)])
-
+	if data.BiologicalGender.IsNull() {
+		genders := []string{"boy", "girl"}
+		data.BiologicalGender = types.StringValue(genders[rand.Int()%len(genders)])
+	}
 	// Write logs using the tflog package
 	// Documentation: https://terraform.io/plugin/log
 	tflog.Trace(ctx, "created a baby")
@@ -272,7 +273,11 @@ func (r *BabyResource) Update(ctx context.Context, req resource.UpdateRequest, r
 }
 
 func (r *BabyResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	tflog.Error(ctx, fmt.Sprintf("Baby can not be deleted!"))
+	var data BabyResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	msg := fmt.Sprintf("Baby %s can not be deleted!", data.Name.String())
+	tflog.Error(ctx, msg)
+	panic(msg)
 }
 
 func (r *BabyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
